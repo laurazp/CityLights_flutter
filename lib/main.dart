@@ -1,5 +1,4 @@
 import 'package:citylights/presentation/navigation/navigation_routes.dart';
-import 'package:citylights/presentation/view/map/map_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,7 +10,8 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(routerConfig: router);
-    //return const MaterialApp(home: MapPage(),);
+    return MaterialApp.router(
+        debugShowCheckedModeBanner: false, routerConfig: router);
+    //return const MaterialApp(home: SplashPage());
   }
 }

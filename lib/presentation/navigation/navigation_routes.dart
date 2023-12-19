@@ -1,13 +1,13 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:citylights/presentation/view/favorite/favorites_page.dart';
-import 'package:citylights/presentation/view/home/home_page.dart';
 import 'package:citylights/presentation/view/map/map_page.dart';
 import 'package:citylights/presentation/view/monument/monuments_page.dart';
+import 'package:citylights/presentation/view/splash/splash_page.dart';
 import 'package:go_router/go_router.dart';
 
 class NavigationRoutes {
-  //static const HOME_ROUTE = "/home";
+  static const HOME_ROUTE = "/home";
   static const MONUMENTS_ROUTE = "/monuments";
   static const MAP_ROUTE = "/map";
   static const FAVORITES_ROUTE = "/favorites";
@@ -23,8 +23,7 @@ class NavigationRoutes {
 final GoRouter router =
     GoRouter(initialLocation: NavigationRoutes.MONUMENTS_ROUTE, routes: [
   StatefulShellRoute.indexedStack(
-      //TODO: cambiar por SplashPage !!
-      builder: (context, state, navigationShell) => HomePage(
+      builder: (context, state, navigationShell) => SplashPage(
             navigationShell: navigationShell,
           ),
       branches: [
