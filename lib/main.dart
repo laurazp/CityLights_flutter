@@ -12,6 +12,5 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
         debugShowCheckedModeBanner: false, routerConfig: router);
-    //return const MaterialApp(home: SplashPage());
   }
 }
