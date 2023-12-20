@@ -35,16 +35,6 @@ class _HomePageState extends State<HomePage> {
                 selectedIcon: Icon(Icons.star),
                 label: "Favorites")
           ]),
-      /*BottomNavigationBar(items: const [
-        BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: "Home",
-            tooltip: "This is the home page"),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.person_outlined), label: "Profile"),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined), label: "Settings")
-      ]),*/
     );
   }
 }

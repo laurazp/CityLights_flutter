@@ -3,6 +3,7 @@
 import 'package:citylights/presentation/view/favorite/favorites_page.dart';
 import 'package:citylights/presentation/view/home/home_page.dart';
 import 'package:citylights/presentation/view/map/map_page.dart';
+import 'package:citylights/presentation/view/monument/monument_detail_page.dart';
 import 'package:citylights/presentation/view/monument/monuments_page.dart';
 import 'package:citylights/presentation/view/splash/splash_page.dart';
 import 'package:go_router/go_router.dart';
@@ -35,12 +36,12 @@ final GoRouter router =
           GoRoute(
             path: NavigationRoutes.MONUMENTS_ROUTE,
             builder: (context, state) => const MonumentsPage(),
-            /*routes: [
+            routes: [
               GoRoute(
                 path: NavigationRoutes._MONUMENT_DETAIL_PATH,
                 builder: (context, state) => const MonumentDetailPage(),
               )
-            ],*/
+            ],
           ),
         ]),
         StatefulShellBranch(routes: [

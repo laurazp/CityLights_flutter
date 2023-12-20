@@ -40,6 +40,7 @@ class _SplashPageState extends State<SplashPage> {
         context.go(NavigationRoutes.MONUMENTS_ROUTE);
       }
     } catch (e) {
+      //TODO: gestionar error
       print('Navigation error: $e');
     }
   }
