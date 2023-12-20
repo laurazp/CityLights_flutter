@@ -1,13 +1,14 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:citylights/presentation/view/favorite/favorites_page.dart';
+import 'package:citylights/presentation/view/home/home_page.dart';
 import 'package:citylights/presentation/view/map/map_page.dart';
 import 'package:citylights/presentation/view/monument/monuments_page.dart';
 import 'package:citylights/presentation/view/splash/splash_page.dart';
 import 'package:go_router/go_router.dart';
 
 class NavigationRoutes {
-  static const HOME_ROUTE = "/home";
+  static const INITIAL_ROUTE = "/";
   static const MONUMENTS_ROUTE = "/monuments";
   static const MAP_ROUTE = "/map";
   static const FAVORITES_ROUTE = "/favorites";
@@ -21,9 +22,12 @@ class NavigationRoutes {
 }
 
 final GoRouter router =
-    GoRouter(initialLocation: NavigationRoutes.MONUMENTS_ROUTE, routes: [
+    GoRouter(initialLocation: NavigationRoutes.INITIAL_ROUTE, routes: [
+  GoRoute(
+      path: NavigationRoutes.INITIAL_ROUTE,
+      builder: (context, state) => const SplashPage()),
   StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) => SplashPage(
+      builder: (context, state, navigationShell) => HomePage(
             navigationShell: navigationShell,
           ),
       branches: [

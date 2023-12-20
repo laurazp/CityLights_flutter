@@ -4,9 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({super.key, required this.navigationShell});
-
-  final StatefulNavigationShell navigationShell;
+  const SplashPage({super.key});
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -39,7 +37,7 @@ class _SplashPageState extends State<SplashPage> {
       await Future.delayed(const Duration(seconds: 3));
 
       if (mounted) {
-        context.go(NavigationRoutes.HOME_ROUTE);
+        context.go(NavigationRoutes.MONUMENTS_ROUTE);
       }
     } catch (e) {
       print('Navigation error: $e');
