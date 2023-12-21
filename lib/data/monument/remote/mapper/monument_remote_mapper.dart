@@ -16,7 +16,7 @@ class MonumentRemoteMapper {
       pois: remoteModel.pois ?? "",
       price: remoteModel.price ?? "Unknown",
       visitInfo: remoteModel.visita ?? "",
-      image: remoteModel.image ?? "",
+      image: _setMonumentImage(remoteModel.image),
       coords: _getCoordsFromGeometry(remoteModel.geometry),
     );
   }
@@ -46,6 +46,14 @@ class MonumentRemoteMapper {
       return LatLng(geometry.coordinates[0], geometry.coordinates[1]);
     } else {
       return const LatLng(0.0, 0.0);
+    }
+  }
+
+  static String _setMonumentImage(String? url) {
+    if (url != null && url != "") {
+      return url;
+    } else {
+      return "https://i.pinimg.com/originals/89/c3/af/89c3af7ea32b8abe1caf2420c5c7ca5d.png";
     }
   }
 }
