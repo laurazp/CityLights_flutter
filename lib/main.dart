@@ -1,7 +1,9 @@
+import 'package:citylights/di/app_modules.dart';
 import 'package:citylights/presentation/navigation/navigation_routes.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  AppModules().setup();
   runApp(const MainApp());
 }
 
