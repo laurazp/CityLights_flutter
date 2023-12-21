@@ -19,6 +19,7 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   dio: ^5.4.0
   get_it: ^7.6.4
+  cached_network_image: ^3.3.0
 
 dev_dependencies:
   flutter_test:
@@ -30,6 +31,7 @@ flutter:
   assets:
     - assets/lottie/
     - assets/icon/
+    - assets/images/
 
 flutter_launcher_icons:
   android: "ic_launcher"
