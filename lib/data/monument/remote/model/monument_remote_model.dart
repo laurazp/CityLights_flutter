@@ -1,7 +1,7 @@
 class MonumentRemoteModel {
   int id;
-  String title;
-  String description;
+  String? title;
+  String? description;
   String? estilo;
   String? address;
   String? horario;

@@ -6,8 +6,8 @@ class MonumentRemoteMapper {
   static Monument fromRemote(MonumentRemoteModel remoteModel) {
     return Monument(
       monumentId: remoteModel.id.toString(),
-      title: remoteModel.title,
-      description: remoteModel.description,
+      title: remoteModel.title ?? "",
+      description: remoteModel.description ?? "",
       style: remoteModel.estilo ?? "",
       address: remoteModel.address ?? "",
       hours: remoteModel.horario ?? "",
