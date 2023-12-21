@@ -5,5 +5,9 @@ class NetworkConstants {
 
   static const MONUMENT_LIST_PATH = "$BASE_URL/monumento.json";
 
-  static const MONUMENT_DETAIL_PATH = "$BASE_URL/monumento/{monumentId}.json";
+  static const MONUMENT_DETAIL_PATH = "$BASE_URL/monumento/";
+
+  static String getMonumentDetailPath(String monumentId) {
+    return "${NetworkConstants.MONUMENT_DETAIL_PATH}$monumentId.json";
+  }
 }
