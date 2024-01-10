@@ -13,23 +13,26 @@ class MonumentListRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.go(NavigationRoutes.MONUMENT_DETAIL_ROUTE, extra: monument);
+        context.go(NavigationRoutes.MONUMENT_DETAIL_ROUTE,
+            extra: monument.monumentId);
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Card(
           child: Row(
             children: [
-              CachedNetworkImage(
-                errorWidget: (context, url, error) {
-                  return const Image(
-                      image: AssetImage("assets/images/church_icon.jpeg"));
-                },
-                imageUrl: monument.image,
-                width: 72,
-                height: 72,
-                fit: BoxFit.cover,
-              ),
+              ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: CachedNetworkImage(
+                    errorWidget: (context, url, error) {
+                      return const Image(
+                          image: AssetImage("assets/images/church_icon.jpeg"));
+                    },
+                    imageUrl: monument.image,
+                    width: 72,
+                    height: 72,
+                    fit: BoxFit.cover,
+                  )),
               const SizedBox(width: 16),
               Flexible(
                 child: Text(

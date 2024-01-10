@@ -39,7 +39,9 @@ final GoRouter router =
             routes: [
               GoRoute(
                 path: NavigationRoutes._MONUMENT_DETAIL_PATH,
-                builder: (context, state) => const MonumentDetailPage(),
+                builder: (context, state) => MonumentDetailPage(
+                  monumentId: state.extra as String,
+                ),
               )
             ],
           ),
