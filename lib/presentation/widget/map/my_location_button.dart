@@ -15,7 +15,7 @@ class MyLocationButton extends StatelessWidget {
         top: 16,
         right: 16,
         child: GestureDetector(
-          child: const Icon(Icons.my_location, color: Colors.blueGrey),
+          child: const Icon(Icons.my_location, color: Colors.black),
           onTap: () {
             mapController.move(location, 17.0);
           },

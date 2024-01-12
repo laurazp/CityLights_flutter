@@ -5,7 +5,7 @@ import 'package:citylights/presentation/model/resource_state.dart';
 import 'package:citylights/presentation/view/monument/viewmodel/monuments_view_model.dart';
 import 'package:citylights/presentation/widget/error/error_view.dart';
 import 'package:citylights/presentation/widget/loading/loading_view.dart';
-import 'package:citylights/presentation/widget/my_location_button.dart';
+import 'package:citylights/presentation/widget/map/my_location_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
