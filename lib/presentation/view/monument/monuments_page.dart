@@ -41,7 +41,7 @@ class _MonumentsPageState extends State<MonumentsPage> {
         case Status.ERROR:
           LoadingView.hide();
           ErrorView.show(context, state.exception!.toString(), () {
-            _monumentsViewModel.fetchMonumentList();
+            _monumentsViewModel.fetchPagingMonumentList();
           });
           break;
       }
@@ -55,7 +55,7 @@ class _MonumentsPageState extends State<MonumentsPage> {
       }*/
     });
 
-    _monumentsViewModel.fetchMonumentList();
+    _monumentsViewModel.fetchPagingMonumentList();
   }
 
   @override

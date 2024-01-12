@@ -6,11 +6,11 @@ class MonumentRemoteMapper {
   static Monument fromRemote(MonumentRemoteModel remoteModel) {
     return Monument(
       monumentId: remoteModel.id.toString(),
-      title: remoteModel.title ?? "",
+      title: remoteModel.title ?? "Unknown",
       description: remoteModel.description ?? "",
-      style: remoteModel.estilo ?? "",
-      address: remoteModel.address ?? "",
-      hours: remoteModel.horario ?? "",
+      style: remoteModel.estilo ?? "Unknown",
+      address: remoteModel.address ?? "Address unknown",
+      hours: remoteModel.horario ?? "Unknown",
       phone: remoteModel.phone ?? "",
       dates: remoteModel.datacion ?? "",
       pois: remoteModel.pois ?? "",
@@ -43,7 +43,7 @@ class MonumentRemoteMapper {
 
   static LatLng _getCoordsFromGeometry(Geometry? geometry) {
     if (geometry != null) {
-      return LatLng(geometry.coordinates[0], geometry.coordinates[1]);
+      return LatLng(geometry.coordinates[1], geometry.coordinates[0]);
     } else {
       return const LatLng(0.0, 0.0);
     }

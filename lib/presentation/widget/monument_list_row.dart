@@ -17,7 +17,7 @@ class MonumentListRow extends StatelessWidget {
             extra: monument.monumentId);
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Card(
           child: Row(
             children: [
