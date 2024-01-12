@@ -1,9 +1,18 @@
+import 'package:citylights/di/app_modules.dart';
+import 'package:citylights/model/monument.dart';
+import 'package:citylights/presentation/model/resource_state.dart';
+import 'package:citylights/presentation/view/monument/viewmodel/monuments_view_model.dart';
+import 'package:citylights/presentation/widget/error/error_view.dart';
+import 'package:citylights/presentation/widget/loading/loading_view.dart';
+import 'package:citylights/presentation/widget/map/marker_info_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
+import 'package:flutter_map_marker_popup/flutter_map_marker_popup.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -13,32 +22,44 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
+  final MonumentsViewModel _monumentsViewModel = inject<MonumentsViewModel>();
   List<Marker> _markers = [];
-  final LatLng _currentMapLocation = const LatLng(41.649693, -0.887712);
+  List<Monument> _monuments = [];
+  //TODO: cambiar por user location
+  final LatLng _initialLocation = const LatLng(41.6559095, -0.876660635);
   final MapController _mapController = MapController();
 
   @override
   void initState() {
     super.initState();
 
+    _monumentsViewModel.getMapMonumentListState.stream.listen((state) {
+      switch (state.status) {
+        case Status.LOADING:
+          //TODO: hace falta setState?
+          setState(() {
+            LoadingView.show(context);
+          });
+          break;
+        case Status.SUCCESS:
+          LoadingView.hide();
+          setState(() {
+            _monuments = state.data!;
+            _markers = _addMarkers(_monuments);
+          });
+          break;
+        case Status.ERROR:
+          LoadingView.hide();
+          ErrorView.show(context, state.exception!.toString(), () {
+            _monumentsViewModel.fetchMapMonumentList();
+          });
+          break;
+      }
+    });
+
+    //TODO: hace falta setState??
     setState(() {
-      //TODO: modificar con los markers de la api y la location del user
-      _markers = [
-        Marker(
-          point: _currentMapLocation,
-          child: GestureDetector(
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Marker clicked!")));
-            },
-            child: const Icon(
-              Icons.location_on,
-              color: Colors.red,
-              size: 40,
-            ),
-          ),
-        ),
-      ];
+      _monumentsViewModel.fetchMapMonumentList();
     });
   }
 
@@ -51,20 +72,29 @@ class _MapPageState extends State<MapPage> {
       body: SafeArea(
         child: Stack(
           children: [
-            FlutterMap(
-              mapController: _mapController,
-              options: const MapOptions(
-                initialZoom: 17,
-                initialCenter: LatLng(41.649693, -0.887712),
-              ),
-              children: [
-                //TODO: Modificar con los pines
-                TileLayer(
-                  urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                  tileProvider: CancellableNetworkTileProvider(),
+            SizedBox(
+              child: FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  initialZoom: 17,
+                  initialCenter: _initialLocation,
                 ),
-                MarkerLayer(markers: _markers),
-              ],
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    tileProvider: CancellableNetworkTileProvider(),
+                  ),
+                  PopupMarkerLayer(
+                    options: PopupMarkerLayerOptions(
+                      markers: _markers,
+                      popupDisplayOptions: PopupDisplayOptions(
+                          builder: (BuildContext context, Marker marker) =>
+                              MarkerInfoCard(marker: marker)),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Positioned(
               top: 16.0,
@@ -78,6 +108,36 @@ class _MapPageState extends State<MapPage> {
         ),
       ),
     );
+  }
+
+  List<Marker> _addMarkers(List<Monument> monuments) {
+    for (Monument monument in monuments) {
+      Marker marker = Marker(
+        point: LatLng(monument.coords.latitude, monument.coords.longitude),
+        child: const Icon(
+          Icons.location_on,
+          color: Colors.red,
+          size: 40,
+        ),
+        /*GestureDetector(
+          onTap: () {
+            ScaffoldMessenger.of(context)
+                //TODO: navigate to Detail
+                .showSnackBar(SnackBar(content: Text(monument.title)));
+          },
+          child: const Icon(
+            Icons.location_on,
+            color: Colors.red,
+            size: 40,
+          ),
+        ),*/
+      );
+
+      _markers.add(marker);
+    }
+
+    setState(() {});
+    return _markers;
   }
 
   _moveToCurrentLocation() async {
@@ -95,9 +155,57 @@ class _MapPageState extends State<MapPage> {
     loc.LocationData location = await loc.Location().getLocation();
 
     setState(() {
-      //TODO: probar controller. animate()
-      _mapController.move(
-          LatLng(location.latitude ?? 0, location.longitude ?? 0), 17);
+      _centerMap(LatLng(location.latitude ?? _initialLocation.latitude,
+          location.longitude ?? _initialLocation.longitude));
     });
   }
+
+  Future<void> checkPermissions() async {
+    PermissionStatus permissionStatus = await Permission.location.status;
+
+    if (permissionStatus != PermissionStatus.granted) {
+      if (!await isLocationDialogShown()) {
+        permissionStatus = await Permission.location.request();
+      }
+    }
+
+    if (permissionStatus != PermissionStatus.granted) {
+      disabledLocationMapButtons();
+      _centerMap(_initialLocation);
+      return;
+    }
+
+    _enableLocationMapButtons();
+    loc.LocationData location = await loc.Location().getLocation();
+    _centerMap(LatLng(location.latitude!, location.longitude!));
+  }
+
+  //TODO: Enable Location Map Button
+  _enableLocationMapButtons() {}
+
+  //TODO: Disable Location Map Button
+  disabledLocationMapButtons() {}
+
+  _centerMap(LatLng location, {double zoom = 12.0}) {
+    _mapController.move(LatLng(location.latitude, location.longitude), zoom);
+  }
+
+  Future<bool> isLocationDialogShown() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('location_dialog_shown') ?? false;
+  }
+
+  Future<void> setLocationDialogShown() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('location_dialog_shown', true);
+  }
+
+  /*Future<void> requestPermission() async {
+    final status = await location.requestPermission();
+    if (status == PermissionStatus.granted) {
+      checkPermissions();
+    } else {
+      showInfoPermissionDialog();
+    }
+  }*/
 }

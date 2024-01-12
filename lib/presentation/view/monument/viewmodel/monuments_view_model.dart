@@ -12,11 +12,25 @@ class MonumentsViewModel extends BaseViewModel {
       StreamController();
   final StreamController<ResourceState<Monument>> getMonumentDetailState =
       StreamController();
+  final StreamController<ResourceState<List<Monument>>>
+      getMapMonumentListState = StreamController();
 
   MonumentsViewModel({required MonumentsRepository monumentsRepository})
       : _monumentsRepository = monumentsRepository;
 
-  fetchMonumentList() {
+  fetchMapMonumentList() {
+    getMapMonumentListState.add(ResourceState.loading());
+
+    _monumentsRepository
+        .getMonumentList()
+        .then((value) =>
+            getMapMonumentListState.add(ResourceState.success(value)))
+        .catchError(
+            (error) => getMapMonumentListState.add(ResourceState.error(error)));
+  }
+
+  //TODO: Modificar para que acepte paginado
+  fetchPagingMonumentList() {
     getMonumentListState.add(ResourceState.loading());
 
     _monumentsRepository
@@ -31,8 +45,8 @@ class MonumentsViewModel extends BaseViewModel {
 
     _monumentsRepository
         .getMonumentDetail(monumentId)
-        .then((value) => getMonumentDetailState.add(
-            ResourceState.success(value as Monument?))) //TODO: revisar casteo
+        .then(
+            (value) => getMonumentDetailState.add(ResourceState.success(value)))
         .catchError(
             (error) => getMonumentDetailState.add(ResourceState.error(error)));
   }
