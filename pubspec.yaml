@@ -20,6 +20,8 @@ dependencies:
   dio: ^5.4.0
   get_it: ^7.6.4
   cached_network_image: ^3.3.0
+  shared_preferences: ^2.2.2
+  flutter_map_marker_popup: ^6.1.2
 
 dev_dependencies:
   flutter_test:
