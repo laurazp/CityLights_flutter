@@ -50,14 +50,6 @@ final GoRouter router =
           GoRoute(
             path: NavigationRoutes.MAP_ROUTE,
             builder: (context, state) => const MapPage(),
-            routes: [
-              GoRoute(
-                path: NavigationRoutes._MONUMENT_DETAIL_PATH,
-                builder: (context, state) => MonumentDetailPage(
-                  monumentId: state.extra as String,
-                ),
-              )
-            ],
           )
         ]),
         StatefulShellBranch(routes: [

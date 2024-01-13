@@ -1,7 +1,6 @@
 import 'package:citylights/model/marker_info.dart';
-import 'package:citylights/presentation/navigation/navigation_routes.dart';
+import 'package:citylights/presentation/view/monument/monument_detail_page.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class MarkerInfoCard extends StatefulWidget {
   const MarkerInfoCard({super.key, required this.markerInfo});
@@ -22,9 +21,19 @@ class _MarkerInfoCardState extends State<MarkerInfoCard> {
       ),
       child: InkWell(
         onTap: () {
-          //TODO: revisar por qué va al mismo
-          context.go(NavigationRoutes.MONUMENT_DETAIL_ROUTE,
-              extra: widget.markerInfo.monumentId);
+          /*
+          En este caso utilizo Navigator.push porque si no la vista del detalle no
+          se refrescaba bien al intentar ir al detalle de otro monumento, si no que 
+          seguía mostrando el detalle del monumento anterior.
+          */
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MonumentDetailPage(
+                monumentId: widget.markerInfo.monumentId,
+              ),
+            ),
+          );
         },
         child: SizedBox(
             height: 50,
