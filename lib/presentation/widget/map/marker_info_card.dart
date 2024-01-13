@@ -1,10 +1,12 @@
+import 'package:citylights/model/marker_info.dart';
+import 'package:citylights/presentation/navigation/navigation_routes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:go_router/go_router.dart';
 
 class MarkerInfoCard extends StatefulWidget {
-  const MarkerInfoCard({super.key, required this.marker});
+  const MarkerInfoCard({super.key, required this.markerInfo});
 
-  final Marker marker;
+  final MarkerInfo markerInfo;
 
   @override
   State<MarkerInfoCard> createState() => _MarkerInfoCardState();
@@ -20,8 +22,9 @@ class _MarkerInfoCardState extends State<MarkerInfoCard> {
       ),
       child: InkWell(
         onTap: () {
-          /*context.go(NavigationRoutes.MONUMENT_DETAIL_ROUTE,
-              extra: monument.monumentId);*/
+          //TODO: revisar por qué va al mismo
+          context.go(NavigationRoutes.MONUMENT_DETAIL_ROUTE,
+              extra: widget.markerInfo.monumentId);
         },
         child: SizedBox(
             height: 50,
@@ -30,11 +33,11 @@ class _MarkerInfoCardState extends State<MarkerInfoCard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(
-                    Icons.info,
+                    Icons.account_balance,
                     color: Colors.grey,
                     size: 20,
                   ),
-                  Text(widget.marker.point.toString()),
+                  Text(widget.markerInfo.title.toString()),
                 ],
               ),
             )),

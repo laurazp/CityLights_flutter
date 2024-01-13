@@ -1,4 +1,5 @@
 import 'package:citylights/di/app_modules.dart';
+import 'package:citylights/model/marker_info.dart';
 import 'package:citylights/model/monument.dart';
 import 'package:citylights/presentation/model/resource_state.dart';
 import 'package:citylights/presentation/view/monument/viewmodel/monuments_view_model.dart';
@@ -23,7 +24,7 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   final MonumentsViewModel _monumentsViewModel = inject<MonumentsViewModel>();
-  List<Marker> _markers = [];
+  List<MarkerInfo> _markers = [];
   List<Monument> _monuments = [];
   //TODO: cambiar por user location
   final LatLng _initialLocation = const LatLng(41.6559095, -0.876660635);
@@ -87,10 +88,15 @@ class _MapPageState extends State<MapPage> {
                   ),
                   PopupMarkerLayer(
                     options: PopupMarkerLayerOptions(
-                      markers: _markers,
+                      markers: _markers
+                          .map((markerInfo) => markerInfo.marker)
+                          .toList(),
                       popupDisplayOptions: PopupDisplayOptions(
-                          builder: (BuildContext context, Marker marker) =>
-                              MarkerInfoCard(marker: marker)),
+                        builder: (BuildContext context, Marker marker) =>
+                            MarkerInfoCard(
+                                markerInfo: _markers.firstWhere((markerInfo) =>
+                                    markerInfo.marker == marker)),
+                      ),
                     ),
                   ),
                 ],
@@ -110,7 +116,7 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-  List<Marker> _addMarkers(List<Monument> monuments) {
+  List<MarkerInfo> _addMarkers(List<Monument> monuments) {
     for (Monument monument in monuments) {
       Marker marker = Marker(
         point: LatLng(monument.coords.latitude, monument.coords.longitude),
@@ -133,7 +139,12 @@ class _MapPageState extends State<MapPage> {
         ),*/
       );
 
-      _markers.add(marker);
+      MarkerInfo markerInfo = MarkerInfo(
+          title: monument.title,
+          marker: marker,
+          monumentId: monument.monumentId);
+
+      _markers.add(markerInfo);
     }
 
     setState(() {});
