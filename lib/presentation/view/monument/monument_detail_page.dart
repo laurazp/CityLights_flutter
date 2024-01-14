@@ -79,14 +79,25 @@ class _MyWidgetState extends State<MonumentDetailPage> {
                 elevation: 5,
                 child: Column(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        imageUrl: _monument!.image,
-                        width: double.infinity,
-                        fit: BoxFit.contain,
+                    Stack(children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: CachedNetworkImage(
+                          imageUrl: _monument!.image,
+                          width: double.infinity,
+                          fit: BoxFit.contain,
+                        ),
                       ),
-                    ),
+                      Positioned(
+                        top: 16.0,
+                        right: 16.0,
+                        child: FloatingActionButton(
+                          backgroundColor: Colors.white,
+                          onPressed: _addToFavorites,
+                          child: const Icon(Icons.favorite_border),
+                        ),
+                      ),
+                    ]),
                     Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Column(
@@ -100,15 +111,14 @@ class _MyWidgetState extends State<MonumentDetailPage> {
                           const SizedBox(height: 8),
                           Text(_monument!.description),
                           const SizedBox(height: 16),
-                          Row(
-                            children: [
-                              const Text(
-                                "Style: ",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Text(_monument!.style.toUpperCase(),
-                                  overflow: TextOverflow.ellipsis),
-                            ],
+                          const Text(
+                            "Style: ",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            _monument!.style.toUpperCase(),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 3,
                           ),
                           const SizedBox(height: 16),
                           const Text(
@@ -190,6 +200,10 @@ class _MyWidgetState extends State<MonumentDetailPage> {
         ),
       ),
     );
+  }
+
+  _addToFavorites() {
+    _viewModel.addMonumentToFavorites(_monument?.monumentId);
   }
 
   @override
