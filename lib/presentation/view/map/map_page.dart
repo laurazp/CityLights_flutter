@@ -122,7 +122,7 @@ class _MapPageState extends State<MapPage> {
         point: LatLng(monument.coords.latitude, monument.coords.longitude),
         child: const Icon(
           Icons.location_on,
-          color: Colors.red,
+          color: Colors.pink,
           size: 40,
         ),
         /*GestureDetector(
