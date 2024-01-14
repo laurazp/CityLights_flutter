@@ -6,7 +6,6 @@ import 'package:citylights/presentation/widget/error/error_view.dart';
 import 'package:citylights/presentation/widget/loading/loading_view.dart';
 import 'package:citylights/presentation/widget/monument_list_row.dart';
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class MonumentsPage extends StatefulWidget {
   const MonumentsPage({super.key});
@@ -18,11 +17,12 @@ class MonumentsPage extends StatefulWidget {
 class _MonumentsPageState extends State<MonumentsPage> {
   final MonumentsViewModel _monumentsViewModel = inject<MonumentsViewModel>();
   List<Monument> _monuments = List.empty(growable: true);
-  //final ScrollController _scrollController = ScrollController();
-  final PagingController<int, Monument> _pagingController =
-      PagingController(firstPageKey: 0);
+  final ScrollController _scrollController = ScrollController();
+  /*final PagingController<int, Monument> _pagingController =
+      PagingController(firstPageKey: 0);*/
 
-  //bool _hasMoreItems = true;
+  bool _hasMoreItems = true;
+  int _nextPage = 0;
 
   @override
   void initState() {
@@ -38,37 +38,39 @@ class _MonumentsPageState extends State<MonumentsPage> {
         case Status.SUCCESS:
           LoadingView.hide();
           //setState(() {
-          _pagingController.addPageRequestListener((pageKey) {
+          /*_pagingController.addPageRequestListener((pageKey) {
             _addMonuments(pageKey);
-          });
+          });*/
           //_monuments = state.data!;
-          //_addMonuments(state.data!);
+          _addMonuments(state.data!);
           //});
           break;
         case Status.ERROR:
-          LoadingView.hide();
-          ErrorView.show(context, state.exception!.toString(), () {
-            //TODO: aquí qué?
-            //_monumentsViewModel.fetchPagingMonumentList();
+          setState(() {
+            LoadingView.hide();
+            ErrorView.show(context, state.exception!.toString(), () {
+              //TODO: aquí qué?
+              _monumentsViewModel.fetchPagingMonumentList(_nextPage);
+            });
           });
           break;
       }
     });
 
-    _pagingController.addPageRequestListener((pageKey) {
+    /*_pagingController.addPageRequestListener((pageKey) {
       _addMonuments(pageKey);
-    });
+    });*/
 
     //TODO: paginado
-    /*_scrollController.addListener(() {
+    _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
               _scrollController.position.maxScrollExtent &&
           _hasMoreItems) {
-        _monumentsViewModel.fetchPagingMonumentList();
+        _monumentsViewModel.fetchPagingMonumentList(_nextPage);
       }
-    });*/
+    });
 
-    //_monumentsViewModel.fetchPagingMonumentList();
+    _monumentsViewModel.fetchPagingMonumentList(_nextPage);
   }
 
   @override
@@ -76,15 +78,14 @@ class _MonumentsPageState extends State<MonumentsPage> {
     return Scaffold(
       appBar: AppBar(title: const Text("Monuments")),
       body: SafeArea(child: _getContentView()),
-      /*floatingActionButton: FloatingActionButton.small(
-        //TODO: revisar si peta scrollController con paginado
+      floatingActionButton: FloatingActionButton.small(
         onPressed: () => _scrollController.animateTo(
           0,
           duration: const Duration(milliseconds: 1050),
           curve: Curves.decelerate,
         ),
         child: const Icon(Icons.arrow_upward),
-      ),*/
+      ),
     );
   }
 
@@ -98,21 +99,21 @@ class _MonumentsPageState extends State<MonumentsPage> {
     return RefreshIndicator(
       onRefresh: () async {
         //TODO: gestionar paginado
-        //_nextPage = 1;
-        _pagingController.refresh();
-        // _monumentsViewModel.fetchPagingMonumentList();
+        //_pagingController.refresh();
+        _nextPage = 1;
+        _monumentsViewModel.fetchPagingMonumentList(_nextPage);
       },
       child: Scrollbar(
-        child: PagedListView(
+        /*child: PagedListView(
           pagingController: _pagingController,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           builderDelegate: PagedChildBuilderDelegate<Monument>(
               itemBuilder: (context, item, index) {
             return MonumentListRow(monument: item);
           }),
-        ),
+        ),*/
 
-        /*controller: _scrollController,
+        controller: _scrollController,
         child: ListView.builder(
           controller: _scrollController,
           itemCount: _monuments.length,
@@ -121,12 +122,24 @@ class _MonumentsPageState extends State<MonumentsPage> {
             final item = _monuments[index];
             return MonumentListRow(monument: item);
           },
-        ),*/
+        ),
       ),
     );
   }
 
-  _addMonuments(int offset) async {
+  _addMonuments(List<Monument> response) async {
+    if (_nextPage == 1) {
+      _monuments.clear();
+    }
+
+    _monuments.addAll(response);
+    _hasMoreItems = response.length > _monuments.length;
+    _nextPage += 1;
+
+    setState(() {});
+  }
+
+  /*_addMonuments(int offset) async {
     try {
       if (offset == 0) {
         _pagingController.itemList?.clear();
@@ -150,5 +163,5 @@ class _MonumentsPageState extends State<MonumentsPage> {
     } catch (error) {
       _pagingController.error = error;
     }
-  }
+  }*/
 }
