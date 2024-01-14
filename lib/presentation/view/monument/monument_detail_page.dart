@@ -61,7 +61,13 @@ class _MyWidgetState extends State<MonumentDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(_monument?.title ?? '', maxLines: 2),
+          toolbarHeight: 100,
+          title: Text(
+            _monument?.title ?? '',
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
         ),
         body: _getContentView());
   }
@@ -72,7 +78,7 @@ class _MyWidgetState extends State<MonumentDetailPage> {
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Column(
             children: [
               Card(
@@ -185,7 +191,7 @@ class _MyWidgetState extends State<MonumentDetailPage> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                             content: Text(_monument?.title ??
-                                                "Monument")));
+                                                "Unknown Monument")));
                                   },
                                   child: const Icon(
                                     Icons.location_on,

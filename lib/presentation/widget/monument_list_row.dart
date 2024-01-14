@@ -17,7 +17,7 @@ class MonumentListRow extends StatelessWidget {
             extra: monument.monumentId);
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Card(
           child: Row(
             children: [
@@ -40,10 +40,14 @@ class MonumentListRow extends StatelessWidget {
                   )),
               const SizedBox(width: 16),
               Flexible(
-                child: Text(
-                  monument.title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                  maxLines: 2,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Text(
+                    monument.title,
+                    style: Theme.of(context).textTheme.titleMedium,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               )
             ],
