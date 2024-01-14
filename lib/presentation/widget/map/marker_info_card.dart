@@ -36,20 +36,26 @@ class _MarkerInfoCardState extends State<MarkerInfoCard> {
           );
         },
         child: SizedBox(
-            height: 50,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.account_balance,
-                    color: Colors.grey,
-                    size: 20,
-                  ),
-                  Text(widget.markerInfo.title.toString()),
-                ],
-              ),
-            )),
+          height: 50,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.account_balance,
+                  color: Colors.grey,
+                  size: 20,
+                ),
+                Text(
+                  widget.markerInfo.title.toString(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -37,7 +37,6 @@ class _MapPageState extends State<MapPage> {
     _monumentsViewModel.getMapMonumentListState.stream.listen((state) {
       switch (state.status) {
         case Status.LOADING:
-          //TODO: hace falta setState?
           setState(() {
             LoadingView.show(context);
           });
