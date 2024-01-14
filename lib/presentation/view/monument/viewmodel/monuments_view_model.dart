@@ -22,7 +22,7 @@ class MonumentsViewModel extends BaseViewModel {
     getMapMonumentListState.add(ResourceState.loading());
 
     _monumentsRepository
-        .getMonumentList()
+        .getMapMonumentList()
         .then((value) =>
             getMapMonumentListState.add(ResourceState.success(value)))
         .catchError(
@@ -30,14 +30,13 @@ class MonumentsViewModel extends BaseViewModel {
   }
 
   //TODO: Modificar para que acepte paginado
-  fetchPagingMonumentList() {
+  fetchPagingMonumentList(int offset) {
     getMonumentListState.add(ResourceState.loading());
 
     _monumentsRepository
-        .getMonumentList()
+        .getMonumentList(offset)
         .then((value) => getMonumentListState.add(ResourceState.success(value)))
-        .catchError(
-            (error) => getMonumentListState.add(ResourceState.error(error)));
+        .catchError((error) => getMonumentListState.add(ResourceState.error(error)));
   }
 
   fetchMonumentDetail(String monumentId) {

@@ -12,11 +12,25 @@ class MonumentsRemoteImpl {
   MonumentsRemoteImpl({required NetworkClient networkClient})
       : _networkClient = networkClient;
 
-  Future<List<Monument>> getMonumentList() async {
+  Future<List<Monument>> getMonumentList(int offset) async {
     try {
       final response = await _networkClient.dio.get(
           NetworkConstants.MONUMENT_LIST_PATH,
-          queryParameters: {"rows": 100, "srsname": "wgs84"});
+          queryParameters: {"start": offset, "rows": 100, "srsname": "wgs84"});
+      final listResponse = response.data;
+      MonumentListRemoteModel remoteModel =
+          MonumentListRemoteModel.fromMap(listResponse);
+      return MonumentListRemoteMapper.fromRemote(remoteModel);
+    } catch (error) {
+      throw RemoteErrorMapper.getException(error);
+    }
+  }
+
+  Future<List<Monument>> getMonumentListForMap() async {
+    try {
+      final response = await _networkClient.dio.get(
+          NetworkConstants.MONUMENT_LIST_PATH,
+          queryParameters: {"rows": 200, "srsname": "wgs84"});
       final listResponse = response.data;
       MonumentListRemoteModel remoteModel =
           MonumentListRemoteModel.fromMap(listResponse);

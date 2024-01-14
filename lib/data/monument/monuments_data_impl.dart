@@ -10,8 +10,13 @@ class MonumentsDataImpl extends MonumentsRepository {
       : _remoteImpl = remoteImpl;
 
   @override
-  Future<List<Monument>> getMonumentList() {
-    return _remoteImpl.getMonumentList();
+  Future<List<Monument>> getMonumentList(int offset) {
+    return _remoteImpl.getMonumentList(offset);
+  }
+
+  @override
+  Future<List<Monument>> getMapMonumentList() {
+    return _remoteImpl.getMonumentListForMap();
   }
 
   @override
