@@ -83,6 +83,17 @@ class _MyWidgetState extends State<MonumentDetailPage> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: CachedNetworkImage(
+                          placeholder: (context, url) {
+                            //TODO: es url o string del asset?
+                            return const Image(
+                                image: AssetImage(
+                                    "assets/images/church_icon.jpeg"));
+                          },
+                          errorWidget: (context, url, error) {
+                            return const Image(
+                                image: AssetImage(
+                                    "assets/images/church_icon.jpeg"));
+                          },
                           imageUrl: _monument!.image,
                           width: double.infinity,
                           fit: BoxFit.contain,
