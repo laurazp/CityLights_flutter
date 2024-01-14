@@ -41,7 +41,7 @@ class _MonumentsPageState extends State<MonumentsPage> {
         case Status.ERROR:
           LoadingView.hide();
           ErrorView.show(context, state.exception!.toString(), () {
-            _monumentsViewModel.fetchMonumentList();
+            _monumentsViewModel.fetchPagingMonumentList();
           });
           break;
       }
@@ -55,7 +55,7 @@ class _MonumentsPageState extends State<MonumentsPage> {
       }*/
     });
 
-    _monumentsViewModel.fetchMonumentList();
+    _monumentsViewModel.fetchPagingMonumentList();
   }
 
   @override
@@ -63,6 +63,14 @@ class _MonumentsPageState extends State<MonumentsPage> {
     return Scaffold(
       appBar: AppBar(title: const Text("Monuments")),
       body: SafeArea(child: _getContentView()),
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: () => _scrollController.animateTo(
+          0,
+          duration: const Duration(milliseconds: 1050),
+          curve: Curves.decelerate,
+        ),
+        child: const Icon(Icons.arrow_upward),
+      ),
     );
   }
 
