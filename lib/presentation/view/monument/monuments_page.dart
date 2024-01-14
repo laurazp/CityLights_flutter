@@ -1,5 +1,6 @@
 import 'package:citylights/di/app_modules.dart';
 import 'package:citylights/model/monument.dart';
+import 'package:citylights/model/monument_list.dart';
 import 'package:citylights/presentation/model/resource_state.dart';
 import 'package:citylights/presentation/view/monument/viewmodel/monuments_view_model.dart';
 import 'package:citylights/presentation/widget/error/error_view.dart';
@@ -16,9 +17,11 @@ class MonumentsPage extends StatefulWidget {
 
 class _MonumentsPageState extends State<MonumentsPage> {
   final MonumentsViewModel _monumentsViewModel = inject<MonumentsViewModel>();
+  final List<Monument> _monuments = List.empty(growable: true);
+
   final ScrollController _scrollController = ScrollController();
-  //List<Monument> _monumentList = [];
-  /*final*/ List<Monument> _monuments = List.empty(growable: true);
+  bool _hasMoreItems = true;
+  int _nextPage = 0;
 
   @override
   void initState() {
@@ -27,35 +30,35 @@ class _MonumentsPageState extends State<MonumentsPage> {
     _monumentsViewModel.getMonumentListState.stream.listen((state) {
       switch (state.status) {
         case Status.LOADING:
-          //TODO: hace falta setState?
           setState(() {
             LoadingView.show(context);
           });
           break;
         case Status.SUCCESS:
           LoadingView.hide();
-          setState(() {
-            _monuments = state.data!;
-          });
+          _addMonuments(state.data!);
           break;
         case Status.ERROR:
-          LoadingView.hide();
-          ErrorView.show(context, state.exception!.toString(), () {
-            _monumentsViewModel.fetchPagingMonumentList();
+          setState(() {
+            LoadingView.hide();
+            ErrorView.show(context, state.exception!.toString(), () {
+              _nextPage = 0;
+              _monumentsViewModel.fetchPagingMonumentList(_nextPage);
+            });
           });
           break;
       }
     });
 
-    //TODO: gestionar paginado
     _scrollController.addListener(() {
-      /*if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        _monumentsViewModel.fetchMonumentList();
-      }*/
+      if (_scrollController.position.pixels ==
+              _scrollController.position.maxScrollExtent &&
+          _hasMoreItems) {
+        _monumentsViewModel.fetchPagingMonumentList(_nextPage);
+      }
     });
 
-    _monumentsViewModel.fetchPagingMonumentList();
+    _monumentsViewModel.fetchPagingMonumentList(_nextPage);
   }
 
   @override
@@ -83,7 +86,8 @@ class _MonumentsPageState extends State<MonumentsPage> {
   Widget _getContentView() {
     return RefreshIndicator(
       onRefresh: () async {
-        //TODO: gestionar paginado
+        _nextPage = 0;
+        _monumentsViewModel.fetchPagingMonumentList(_nextPage);
       },
       child: Scrollbar(
         controller: _scrollController,
@@ -98,5 +102,17 @@ class _MonumentsPageState extends State<MonumentsPage> {
         ),
       ),
     );
+  }
+
+  _addMonuments(MonumentList response) async {
+    if (_nextPage == 0) {
+      _monuments.clear();
+    }
+
+    _monuments.addAll(response.result);
+    _hasMoreItems = response.totalCount > _monuments.length;
+    _nextPage += 1;
+
+    setState(() {});
   }
 }
