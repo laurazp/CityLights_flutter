@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:citylights/domain/monuments_repository.dart';
 import 'package:citylights/model/monument.dart';
+import 'package:citylights/model/monument_list.dart';
 import 'package:citylights/presentation/base/base_view_model.dart';
 import 'package:citylights/presentation/model/resource_state.dart';
 
 class MonumentsViewModel extends BaseViewModel {
   final MonumentsRepository _monumentsRepository;
 
-  final StreamController<ResourceState<List<Monument>>> getMonumentListState =
+  final StreamController<ResourceState<MonumentList>> getMonumentListState =
       StreamController();
   final StreamController<ResourceState<Monument>> getMonumentDetailState =
       StreamController();

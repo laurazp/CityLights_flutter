@@ -1,5 +1,6 @@
 import 'package:citylights/di/app_modules.dart';
 import 'package:citylights/model/monument.dart';
+import 'package:citylights/model/monument_list.dart';
 import 'package:citylights/presentation/model/resource_state.dart';
 import 'package:citylights/presentation/view/monument/viewmodel/monuments_view_model.dart';
 import 'package:citylights/presentation/widget/error/error_view.dart';
@@ -16,11 +17,9 @@ class MonumentsPage extends StatefulWidget {
 
 class _MonumentsPageState extends State<MonumentsPage> {
   final MonumentsViewModel _monumentsViewModel = inject<MonumentsViewModel>();
-  List<Monument> _monuments = List.empty(growable: true);
-  final ScrollController _scrollController = ScrollController();
-  /*final PagingController<int, Monument> _pagingController =
-      PagingController(firstPageKey: 0);*/
+  final List<Monument> _monuments = List.empty(growable: true);
 
+  final ScrollController _scrollController = ScrollController();
   bool _hasMoreItems = true;
   int _nextPage = 0;
 
@@ -37,19 +36,13 @@ class _MonumentsPageState extends State<MonumentsPage> {
           break;
         case Status.SUCCESS:
           LoadingView.hide();
-          //setState(() {
-          /*_pagingController.addPageRequestListener((pageKey) {
-            _addMonuments(pageKey);
-          });*/
-          //_monuments = state.data!;
           _addMonuments(state.data!);
-          //});
           break;
         case Status.ERROR:
           setState(() {
             LoadingView.hide();
             ErrorView.show(context, state.exception!.toString(), () {
-              //TODO: aquí qué?
+              _nextPage = 0;
               _monumentsViewModel.fetchPagingMonumentList(_nextPage);
             });
           });
@@ -57,11 +50,6 @@ class _MonumentsPageState extends State<MonumentsPage> {
       }
     });
 
-    /*_pagingController.addPageRequestListener((pageKey) {
-      _addMonuments(pageKey);
-    });*/
-
-    //TODO: paginado
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
               _scrollController.position.maxScrollExtent &&
@@ -98,21 +86,10 @@ class _MonumentsPageState extends State<MonumentsPage> {
   Widget _getContentView() {
     return RefreshIndicator(
       onRefresh: () async {
-        //TODO: gestionar paginado
-        //_pagingController.refresh();
-        _nextPage = 1;
+        _nextPage = 0;
         _monumentsViewModel.fetchPagingMonumentList(_nextPage);
       },
       child: Scrollbar(
-        /*child: PagedListView(
-          pagingController: _pagingController,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          builderDelegate: PagedChildBuilderDelegate<Monument>(
-              itemBuilder: (context, item, index) {
-            return MonumentListRow(monument: item);
-          }),
-        ),*/
-
         controller: _scrollController,
         child: ListView.builder(
           controller: _scrollController,
@@ -127,41 +104,15 @@ class _MonumentsPageState extends State<MonumentsPage> {
     );
   }
 
-  _addMonuments(List<Monument> response) async {
-    if (_nextPage == 1) {
+  _addMonuments(MonumentList response) async {
+    if (_nextPage == 0) {
       _monuments.clear();
     }
 
-    _monuments.addAll(response);
-    _hasMoreItems = response.length > _monuments.length;
+    _monuments.addAll(response.result);
+    _hasMoreItems = response.totalCount > _monuments.length;
     _nextPage += 1;
 
     setState(() {});
   }
-
-  /*_addMonuments(int offset) async {
-    try {
-      if (offset == 0) {
-        _pagingController.itemList?.clear();
-      }
-
-      final monumentsResponse =
-          await _monumentsViewModel.fetchPagingMonumentList(offset);
-
-      //final end = _pagingController.itemList?.length == monumentsResponse.count;
-      //final end = monumentsResponse.size < 100;
-
-      /*if (end) {
-        _pagingController.appendLastPage([]);
-        return;
-      }*/
-
-      _pagingController.appendPage(
-          monumentsResponse.results, monumentsResponse.count + offset);
-
-      setState(() {});
-    } catch (error) {
-      _pagingController.error = error;
-    }
-  }*/
 }

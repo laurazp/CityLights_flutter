@@ -2,6 +2,7 @@ import 'package:citylights/data/monument/remote/mapper/monument_remote_mapper.da
 import 'package:citylights/data/monument/remote/monuments_remote_impl.dart';
 import 'package:citylights/domain/monuments_repository.dart';
 import 'package:citylights/model/monument.dart';
+import 'package:citylights/model/monument_list.dart';
 
 class MonumentsDataImpl extends MonumentsRepository {
   final MonumentsRemoteImpl _remoteImpl;
@@ -10,7 +11,7 @@ class MonumentsDataImpl extends MonumentsRepository {
       : _remoteImpl = remoteImpl;
 
   @override
-  Future<List<Monument>> getMonumentList(int page) {
+  Future<MonumentList> getMonumentList(int page) {
     return _remoteImpl.getMonumentList(page);
   }
 
