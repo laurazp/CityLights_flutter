@@ -18,6 +18,9 @@ class MonumentsPage extends StatefulWidget {
 class _MonumentsPageState extends State<MonumentsPage> {
   final MonumentsViewModel _monumentsViewModel = inject<MonumentsViewModel>();
   final List<Monument> _monuments = List.empty(growable: true);
+  List<Monument> _filteredMonuments = List.empty(growable: true);
+
+  final TextEditingController _searchController = TextEditingController();
 
   final ScrollController _scrollController = ScrollController();
   bool _hasMoreItems = true;
@@ -37,6 +40,7 @@ class _MonumentsPageState extends State<MonumentsPage> {
         case Status.SUCCESS:
           LoadingView.hide();
           _addMonuments(state.data!);
+          _filterMonuments();
           break;
         case Status.ERROR:
           setState(() {
@@ -64,7 +68,17 @@ class _MonumentsPageState extends State<MonumentsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Monuments")),
+      appBar: AppBar(
+        title: const Text("Monuments"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              _showSearchBar();
+            },
+          ),
+        ],
+      ),
       body: SafeArea(child: _getContentView()),
       floatingActionButton: FloatingActionButton.small(
         onPressed: () => _scrollController.animateTo(
@@ -93,14 +107,58 @@ class _MonumentsPageState extends State<MonumentsPage> {
         controller: _scrollController,
         child: ListView.builder(
           controller: _scrollController,
-          itemCount: _monuments.length,
+          itemCount: _filteredMonuments.length,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           itemBuilder: (context, index) {
-            final item = _monuments[index];
+            final item = _filteredMonuments[index];
             return MonumentListRow(monument: item);
           },
         ),
       ),
+    );
+  }
+
+  _filterMonuments() {
+    String searchTerm = _searchController.text.toLowerCase();
+
+    if (searchTerm.isEmpty) {
+      _filteredMonuments = _monuments;
+    } else {
+      _filteredMonuments = _monuments
+          .where(
+              (monument) => monument.title.toLowerCase().contains(searchTerm))
+          .toList();
+    }
+
+    setState(() {});
+  }
+
+  _showSearchBar() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Search Monuments"),
+          content: TextField(
+            controller: _searchController,
+            onChanged: (value) {
+              _filterMonuments();
+            },
+            decoration: const InputDecoration(
+              hintText: "Enter Monument Title",
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                //TODO: limpiar string? _searchController.text = "";
+                Navigator.of(context).pop();
+              },
+              child: const Text("Accept"),
+            ),
+          ],
+        );
+      },
     );
   }
 
