@@ -71,6 +71,7 @@ class _MonumentsPageState extends State<MonumentsPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Monuments"),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
