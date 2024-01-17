@@ -21,6 +21,7 @@ class _MonumentsPageState extends State<MonumentsPage> {
   List<Monument> _filteredMonuments = List.empty(growable: true);
 
   final TextEditingController _searchController = TextEditingController();
+  bool _isAscendingOrder = false;
 
   final ScrollController _scrollController = ScrollController();
   bool _hasMoreItems = true;
@@ -75,6 +76,14 @@ class _MonumentsPageState extends State<MonumentsPage> {
             icon: const Icon(Icons.search),
             onPressed: () {
               _showSearchBar();
+            },
+          ),
+          IconButton(
+            icon: Icon(_isAscendingOrder
+                ? Icons.sort_by_alpha
+                : Icons.sort_by_alpha_outlined),
+            onPressed: () {
+              _toggleSortOrder();
             },
           ),
         ],
@@ -160,6 +169,20 @@ class _MonumentsPageState extends State<MonumentsPage> {
         );
       },
     );
+  }
+
+  _sortMonuments() {
+    _filteredMonuments.sort((a, b) {
+      return _isAscendingOrder
+          ? a.title.toLowerCase().compareTo(b.title.toLowerCase())
+          : b.title.toLowerCase().compareTo(a.title.toLowerCase());
+    });
+  }
+
+  _toggleSortOrder() {
+    _isAscendingOrder = !_isAscendingOrder;
+    _sortMonuments();
+    setState(() {});
   }
 
   _addMonuments(MonumentList response) async {
