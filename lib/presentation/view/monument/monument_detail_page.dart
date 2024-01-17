@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:citylights/di/app_modules.dart';
 import 'package:citylights/model/monument.dart';
 import 'package:citylights/presentation/model/resource_state.dart';
+import 'package:citylights/presentation/view/favorite/viewmodel/favorites_view_model.dart';
 import 'package:citylights/presentation/view/monument/viewmodel/monuments_view_model.dart';
 import 'package:citylights/presentation/widget/error/error_view.dart';
 import 'package:citylights/presentation/widget/loading/loading_view.dart';
@@ -21,7 +22,8 @@ class MonumentDetailPage extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<MonumentDetailPage> {
-  final MonumentsViewModel _viewModel = inject<MonumentsViewModel>();
+  final MonumentsViewModel _monumentsViewModel = inject<MonumentsViewModel>();
+  final FavoritesViewModel _favoritesViewModel = inject<FavoritesViewModel>();
   final MapController _mapController = MapController();
   Monument? _monument;
 
@@ -29,7 +31,7 @@ class _MyWidgetState extends State<MonumentDetailPage> {
   void initState() {
     super.initState();
 
-    _viewModel.getMonumentDetailState.stream.listen((state) {
+    _monumentsViewModel.getMonumentDetailState.stream.listen((state) {
       switch (state.status) {
         case Status.LOADING:
           setState(() {
@@ -47,14 +49,14 @@ class _MyWidgetState extends State<MonumentDetailPage> {
           setState(() {
             LoadingView.hide();
             ErrorView.show(context, state.exception.toString(), () {
-              _viewModel.fetchMonumentDetail(widget.monumentId);
+              _monumentsViewModel.fetchMonumentDetail(widget.monumentId);
             });
           });
           break;
       }
     });
 
-    _viewModel.fetchMonumentDetail(widget.monumentId);
+    _monumentsViewModel.fetchMonumentDetail(widget.monumentId);
   }
 
   @override
@@ -90,7 +92,6 @@ class _MyWidgetState extends State<MonumentDetailPage> {
                         borderRadius: BorderRadius.circular(10),
                         child: CachedNetworkImage(
                           placeholder: (context, url) {
-                            //TODO: es url o string del asset?
                             return const Image(
                                 image: AssetImage(
                                     "assets/images/church_icon.jpeg"));
@@ -109,7 +110,10 @@ class _MyWidgetState extends State<MonumentDetailPage> {
                         top: 16.0,
                         right: 16.0,
                         child: FloatingActionButton(
-                          backgroundColor: Colors.white,
+                          //backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
                           onPressed: _addToFavorites,
                           child: const Icon(Icons.favorite_border),
                         ),
@@ -220,12 +224,12 @@ class _MyWidgetState extends State<MonumentDetailPage> {
   }
 
   _addToFavorites() {
-    _viewModel.addMonumentToFavorites(_monument?.monumentId);
+    _favoritesViewModel.addMonumentToFavorites(_monument!);
   }
 
   @override
   void dispose() {
-    _viewModel.dispose();
+    _monumentsViewModel.dispose();
     super.dispose();
   }
 }

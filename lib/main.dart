@@ -1,9 +1,16 @@
 import 'package:citylights/di/app_modules.dart';
+import 'package:citylights/firebase_options.dart';
 import 'package:citylights/presentation/navigation/navigation_routes.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   AppModules().setup();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  print("Firebase initialized");
   runApp(const MainApp());
 }
 

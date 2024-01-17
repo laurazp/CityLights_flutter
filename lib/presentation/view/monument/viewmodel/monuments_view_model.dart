@@ -52,10 +52,6 @@ class MonumentsViewModel extends BaseViewModel {
             (error) => getMonumentDetailState.add(ResourceState.error(error)));
   }
 
-  addMonumentToFavorites(String? monumentId) {
-    //TODO: implementar y gestionar nulo??
-  }
-
   @override
   void dispose() {
     getMonumentListState.close();
