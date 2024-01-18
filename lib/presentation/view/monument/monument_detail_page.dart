@@ -25,7 +25,9 @@ class _MyWidgetState extends State<MonumentDetailPage> {
   final MonumentsViewModel _monumentsViewModel = inject<MonumentsViewModel>();
   final FavoritesViewModel _favoritesViewModel = inject<FavoritesViewModel>();
   final MapController _mapController = MapController();
+
   Monument? _monument;
+  bool _isFavorite = false;
 
   @override
   void initState() {
@@ -115,7 +117,9 @@ class _MyWidgetState extends State<MonumentDetailPage> {
                             borderRadius: BorderRadius.circular(30.0),
                           ),
                           onPressed: _addToFavorites,
-                          child: const Icon(Icons.favorite_border),
+                          child: _isFavorite
+                              ? const Icon(Icons.favorite, color: Colors.red)
+                              : const Icon(Icons.favorite_border),
                         ),
                       ),
                     ]),
@@ -224,7 +228,21 @@ class _MyWidgetState extends State<MonumentDetailPage> {
   }
 
   _addToFavorites() {
-    _favoritesViewModel.addMonumentToFavorites(_monument!);
+    setState(() {
+      if (!_isFavorite) {
+        _isFavorite = true;
+        _favoritesViewModel.addMonumentToFavorites(_monument!);
+      } else {
+        _deleteFromFavorites();
+      }
+    });
+  }
+
+  _deleteFromFavorites() {
+    setState(() {
+      _isFavorite = false;
+      //TODO: _favoritesViewModel.deleteMonumentFromFavorites(_monument!);
+    });
   }
 
   @override
