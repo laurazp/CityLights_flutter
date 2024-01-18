@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:citylights/model/favorite_item.dart';
+import 'package:citylights/presentation/view/monument/monument_detail_page.dart';
 import 'package:flutter/material.dart';
 
 class FavoriteListRow extends StatelessWidget {
@@ -11,8 +12,14 @@ class FavoriteListRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        /*context.go(NavigationRoutes.MONUMENT_DETAIL_ROUTE,
-            extra: monument.monumentId);*/
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MonumentDetailPage(
+              monumentId: favorite.id ?? "",
+            ),
+          ),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),

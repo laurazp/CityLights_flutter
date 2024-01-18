@@ -15,11 +15,8 @@ class NavigationRoutes {
   static const FAVORITES_ROUTE = "/favorites";
   static const MONUMENT_DETAIL_ROUTE =
       "$MONUMENTS_ROUTE/$_MONUMENT_DETAIL_PATH";
-  static const FAVORITE_DETAIL_ROUTE =
-      "$FAVORITES_ROUTE/$_FAVORITE_DETAIL_PATH";
 
   static const _MONUMENT_DETAIL_PATH = "monument-detail";
-  static const _FAVORITE_DETAIL_PATH = "favorite-detail";
 }
 
 final GoRouter router =
@@ -56,12 +53,6 @@ final GoRouter router =
           GoRoute(
             path: NavigationRoutes.FAVORITES_ROUTE,
             builder: (context, state) => const FavoritesPage(),
-            /*routes: [
-              GoRoute(
-                path: NavigationRoutes._FAVORITE_DETAIL_PATH,
-                builder: (context, state) => const FavoriteDetailPage(),
-              )
-            ],*/
           )
         ])
       ])
