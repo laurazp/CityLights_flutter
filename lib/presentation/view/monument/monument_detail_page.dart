@@ -18,10 +18,10 @@ class MonumentDetailPage extends StatefulWidget {
   final String monumentId;
 
   @override
-  State<MonumentDetailPage> createState() => _MyWidgetState();
+  State<MonumentDetailPage> createState() => _MonumentDetailPageState();
 }
 
-class _MyWidgetState extends State<MonumentDetailPage> {
+class _MonumentDetailPageState extends State<MonumentDetailPage> {
   final MonumentsViewModel _monumentsViewModel = inject<MonumentsViewModel>();
   final FavoritesViewModel _favoritesViewModel = inject<FavoritesViewModel>();
   final MapController _mapController = MapController();
