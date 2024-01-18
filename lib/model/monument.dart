@@ -14,6 +14,7 @@ class Monument {
   String visitInfo;
   String image;
   LatLng coords;
+  bool isFavorite = false;
 
   Monument({
     required this.monumentId,

@@ -6,8 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class FavoritesRemoteImpl {
   final FavoriteRemoteMapper _favoriteRemoteMapper = FavoriteRemoteMapper();
 
+  FirebaseFirestore storage = FirebaseFirestore.instance;
+
   Future<List<FavoriteItem>> getFavorites() async {
-    FirebaseFirestore storage = FirebaseFirestore.instance;
     final data = await storage.collection("favorites").get();
 
     List<FavoriteItem> items =
@@ -18,13 +19,10 @@ class FavoritesRemoteImpl {
 
   addItem(Monument item) async {
     FavoriteItem favorite = _favoriteRemoteMapper.toFirebase(item);
-
-    FirebaseFirestore storage = FirebaseFirestore.instance;
     await storage.collection("favorites").add(favorite.toMap());
   }
 
   removeItem(Monument item) async {
-    FirebaseFirestore storage = FirebaseFirestore.instance;
     QuerySnapshot querySnapshot = await storage
         .collection("favorites")
         .where('id', isEqualTo: item.monumentId)
@@ -33,5 +31,14 @@ class FavoritesRemoteImpl {
     for (var doc in querySnapshot.docs) {
       doc.reference.delete();
     }
+  }
+
+  Future<bool> isFavoriteInDatabase(Monument monument) async {
+    QuerySnapshot querySnapshot = await storage
+        .collection("favorites")
+        .where('id', isEqualTo: monument.monumentId)
+        .get();
+
+    return querySnapshot.docs.isNotEmpty;
   }
 }

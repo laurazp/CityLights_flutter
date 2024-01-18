@@ -27,11 +27,13 @@ class _MonumentDetailPageState extends State<MonumentDetailPage> {
   final MapController _mapController = MapController();
 
   Monument? _monument;
-  bool _isFavorite = false;
+  //late bool _isFavorite;
 
   @override
   void initState() {
     super.initState();
+
+    //_isFavorite = false;
 
     _monumentsViewModel.getMonumentDetailState.stream.listen((state) {
       switch (state.status) {
@@ -117,7 +119,7 @@ class _MonumentDetailPageState extends State<MonumentDetailPage> {
                             borderRadius: BorderRadius.circular(30.0),
                           ),
                           onPressed: _addToFavorites,
-                          child: _isFavorite
+                          child: _monument!.isFavorite
                               ? const Icon(Icons.favorite, color: Colors.red)
                               : const Icon(Icons.favorite_border),
                         ),
@@ -227,10 +229,10 @@ class _MonumentDetailPageState extends State<MonumentDetailPage> {
     );
   }
 
-  _addToFavorites() {
+  _addToFavorites() async {
     setState(() {
-      if (!_isFavorite) {
-        _isFavorite = true;
+      if (!_monument!.isFavorite) {
+        _monument!.isFavorite = true;
         _favoritesViewModel.addMonumentToFavorites(_monument!);
       } else {
         _deleteFromFavorites();
@@ -238,9 +240,9 @@ class _MonumentDetailPageState extends State<MonumentDetailPage> {
     });
   }
 
-  _deleteFromFavorites() {
+  _deleteFromFavorites() async {
     setState(() {
-      _isFavorite = false;
+      _monument!.isFavorite = false;
       _favoritesViewModel.deleteMonumentFromFavorites(_monument!);
     });
   }

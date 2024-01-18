@@ -23,4 +23,9 @@ class FavoritesDataImpl extends FavoritesRepository {
   removeItem(Monument item) {
     return _remoteImpl.removeItem(item);
   }
+
+  @override
+  isFavoriteInDatabase(Monument monument) {
+    return _remoteImpl.isFavoriteInDatabase(monument);
+  }
 }

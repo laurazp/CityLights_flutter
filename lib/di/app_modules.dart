@@ -25,8 +25,8 @@ class AppModules {
   _setupMonumentModule() {
     inject.registerFactory(
         () => MonumentsRemoteImpl(networkClient: inject.get()));
-    inject.registerFactory<MonumentsRepository>(
-        () => MonumentsDataImpl(remoteImpl: inject.get()));
+    inject.registerFactory<MonumentsRepository>(() => MonumentsDataImpl(
+        remoteImpl: inject.get(), remoteFirebaseImpl: inject.get()));
     inject.registerFactory(
         () => MonumentsViewModel(monumentsRepository: inject.get()));
   }
