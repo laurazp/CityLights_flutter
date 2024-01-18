@@ -40,7 +40,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
           setState(() {
             LoadingView.hide();
             ErrorView.show(context, state.exception!.toString(), () {
-              _favoritesViewModel.fetchFavoriteList();
+              _getFavorites();
             });
           });
           break;
@@ -73,23 +73,33 @@ class _FavoritesPageState extends State<FavoritesPage> {
   }
 
   Widget _getContentView() {
-    return RefreshIndicator(
-      onRefresh: () async {
-        _getFavorites();
-      },
-      child: Scrollbar(
-        controller: _scrollController,
-        child: ListView.builder(
-          controller: _scrollController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: _favorites.length,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          itemBuilder: (context, index) {
-            final item = _favorites[index];
-            return FavoriteListRow(favorite: item);
-          },
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text("Swipe to refresh your favorites"),
         ),
-      ),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: () async {
+              _getFavorites();
+            },
+            child: Scrollbar(
+              controller: _scrollController,
+              child: ListView.builder(
+                controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
+                itemCount: _favorites.length,
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                itemBuilder: (context, index) {
+                  final item = _favorites[index];
+                  return FavoriteListRow(favorite: item);
+                },
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

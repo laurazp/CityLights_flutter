@@ -25,7 +25,6 @@ class MonumentListRow extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   child: CachedNetworkImage(
                     placeholder: (context, url) {
-                      //TODO: es url o string del asset?
                       return const Image(
                           image: AssetImage("assets/images/church_icon.jpeg"));
                     },
