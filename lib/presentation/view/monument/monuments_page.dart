@@ -161,7 +161,14 @@ class _MonumentsPageState extends State<MonumentsPage> {
           actions: [
             TextButton(
               onPressed: () {
-                //TODO: limpiar string? _searchController.text = "";
+                _searchController.text = "";
+                _monumentsViewModel.fetchPagingMonumentList(_nextPage);
+                Navigator.of(context).pop();
+              },
+              child: const Text("Clear filters"),
+            ),
+            TextButton(
+              onPressed: () {
                 Navigator.of(context).pop();
               },
               child: const Text("Accept"),
