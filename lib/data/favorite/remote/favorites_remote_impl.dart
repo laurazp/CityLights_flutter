@@ -22,4 +22,16 @@ class FavoritesRemoteImpl {
     FirebaseFirestore storage = FirebaseFirestore.instance;
     await storage.collection("favorites").add(favorite.toMap());
   }
+
+  removeItem(Monument item) async {
+    FirebaseFirestore storage = FirebaseFirestore.instance;
+    QuerySnapshot querySnapshot = await storage
+        .collection("favorites")
+        .where('id', isEqualTo: item.monumentId)
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      doc.reference.delete();
+    }
+  }
 }

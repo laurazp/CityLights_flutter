@@ -35,4 +35,8 @@ class FavoritesViewModel extends BaseViewModel {
   void dispose() {
     getFavoriteListState.close();
   }
+
+  deleteMonumentFromFavorites(Monument monument) async {
+    await _favoritesRepository.removeItem(monument);
+  }
 }

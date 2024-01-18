@@ -81,6 +81,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
         controller: _scrollController,
         child: ListView.builder(
           controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
           itemCount: _favorites.length,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           itemBuilder: (context, index) {
@@ -98,6 +99,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
   }
 
   _addFavorites(List<FavoriteItem> response) async {
+    _favorites.clear();
     _favorites.addAll(response);
 
     setState(() {});

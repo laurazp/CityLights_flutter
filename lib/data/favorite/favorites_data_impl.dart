@@ -18,4 +18,9 @@ class FavoritesDataImpl extends FavoritesRepository {
   addItem(Monument item) {
     return _remoteImpl.addItem(item);
   }
+
+  @override
+  removeItem(Monument item) {
+    return _remoteImpl.removeItem(item);
+  }
 }

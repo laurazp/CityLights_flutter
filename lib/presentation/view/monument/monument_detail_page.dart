@@ -241,7 +241,7 @@ class _MyWidgetState extends State<MonumentDetailPage> {
   _deleteFromFavorites() {
     setState(() {
       _isFavorite = false;
-      //TODO: _favoritesViewModel.deleteMonumentFromFavorites(_monument!);
+      _favoritesViewModel.deleteMonumentFromFavorites(_monument!);
     });
   }
 
