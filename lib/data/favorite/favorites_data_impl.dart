@@ -14,12 +14,6 @@ class FavoritesDataImpl extends FavoritesRepository {
     return _remoteImpl.getFavorites();
   }
 
-  /*@override
-  Future<FavoriteItem> getFavoriteDetail(String monumentId) {
-    // TODO: implement getFavoriteDetail
-    return _remoteImpl.getFavoriteDetail();
-  }*/
-
   @override
   addItem(Monument item) {
     return _remoteImpl.addItem(item);
