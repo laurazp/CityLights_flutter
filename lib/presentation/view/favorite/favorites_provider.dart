@@ -7,7 +7,6 @@ import 'package:citylights/presentation/view/favorite/viewmodel/favorites_view_m
 import 'package:flutter/material.dart';
 
 class FavoritesProvider extends ChangeNotifier {
-  int count = 0;
   List<FavoriteItem> monuments = [];
 
   final FavoritesViewModel _favoritesViewModel = inject<FavoritesViewModel>();
