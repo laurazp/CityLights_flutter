@@ -40,8 +40,29 @@ class _SplashPageState extends State<SplashPage> {
         context.go(NavigationRoutes.MONUMENTS_ROUTE);
       }
     } catch (e) {
-      //TODO: gestionar error
-      print('Navigation error: $e');
+      _showErrorDialog();
     }
+  }
+
+  void _showErrorDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: const Text(
+              'An error occurred while navigating to the main page.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _navigateToNextPage();
+              },
+              child: const Text('Reload'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

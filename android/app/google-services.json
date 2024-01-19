@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "649205325956",
+    "project_id": "citylightsflutter",
+    "storage_bucket": "citylightsflutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:649205325956:android:25e3fb373f38147c69e2d1",
+        "android_client_info": {
+          "package_name": "com.example.citylights"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD6BkOrdXFWbkgZEafFqxIOJIm7zVTcqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

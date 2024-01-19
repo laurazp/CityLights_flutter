@@ -26,7 +26,14 @@ class _MapPageState extends State<MapPage> {
   final MonumentsViewModel _monumentsViewModel = inject<MonumentsViewModel>();
   List<MarkerInfo> _markers = [];
   List<Monument> _monuments = [];
-  //TODO: cambiar por user location
+  bool _isLocationEnabled = false;
+
+/* He decidido centrar el mapa en el centro de Zaragoza al cargar la MapPage,
+para que, si el usuario no otorga permisos de ubicación, se vean los monumentos 
+que hay en el centro de Zaragoza. Y si el usuario quiere ver los monumentos que 
+se encuentran alrededor de su localización, puede otorgar permisos y hacer 
+click en el botón de centrar mapa en tu ubicación y ya podría ver qué monumentos 
+se encuentran a su alrededor */
   final LatLng _initialLocation = const LatLng(41.6559095, -0.876660635);
   final MapController _mapController = MapController();
 
@@ -37,7 +44,6 @@ class _MapPageState extends State<MapPage> {
     _monumentsViewModel.getMapMonumentListState.stream.listen((state) {
       switch (state.status) {
         case Status.LOADING:
-          //TODO: hace falta setState?
           setState(() {
             LoadingView.show(context);
           });
@@ -58,10 +64,11 @@ class _MapPageState extends State<MapPage> {
       }
     });
 
-    //TODO: hace falta setState??
     setState(() {
       _monumentsViewModel.fetchMapMonumentList();
     });
+
+    checkPermissions();
   }
 
   @override
@@ -106,7 +113,7 @@ class _MapPageState extends State<MapPage> {
               top: 16.0,
               right: 16.0,
               child: FloatingActionButton(
-                onPressed: _moveToCurrentLocation,
+                onPressed: _isLocationEnabled ? _moveToCurrentLocation : null,
                 child: const Icon(Icons.my_location_outlined),
               ),
             ),
@@ -125,18 +132,6 @@ class _MapPageState extends State<MapPage> {
           color: Colors.pink,
           size: 40,
         ),
-        /*GestureDetector(
-          onTap: () {
-            ScaffoldMessenger.of(context)
-                //TODO: navigate to Detail
-                .showSnackBar(SnackBar(content: Text(monument.title)));
-          },
-          child: const Icon(
-            Icons.location_on,
-            color: Colors.red,
-            size: 40,
-          ),
-        ),*/
       );
 
       MarkerInfo markerInfo = MarkerInfo(
@@ -153,7 +148,6 @@ class _MapPageState extends State<MapPage> {
 
   _moveToCurrentLocation() async {
     PermissionStatus permissionStatus = await Permission.location.status;
-    print(permissionStatus);
 
     if (permissionStatus != PermissionStatus.granted) {
       permissionStatus = await Permission.location.request();
@@ -181,23 +175,29 @@ class _MapPageState extends State<MapPage> {
     }
 
     if (permissionStatus != PermissionStatus.granted) {
-      disabledLocationMapButtons();
+      disabledLocationMapButton();
       _centerMap(_initialLocation);
       return;
     }
 
-    _enableLocationMapButtons();
+    _enableLocationMapButton();
     loc.LocationData location = await loc.Location().getLocation();
     _centerMap(LatLng(location.latitude!, location.longitude!));
   }
 
-  //TODO: Enable Location Map Button
-  _enableLocationMapButtons() {}
+  _enableLocationMapButton() {
+    setState(() {
+      _isLocationEnabled = true;
+    });
+  }
 
-  //TODO: Disable Location Map Button
-  disabledLocationMapButtons() {}
+  disabledLocationMapButton() {
+    setState(() {
+      _isLocationEnabled = false;
+    });
+  }
 
-  _centerMap(LatLng location, {double zoom = 12.0}) {
+  _centerMap(LatLng location, {double zoom = 17.0}) {
     _mapController.move(LatLng(location.latitude, location.longitude), zoom);
   }
 
@@ -210,13 +210,4 @@ class _MapPageState extends State<MapPage> {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool('location_dialog_shown', true);
   }
-
-  /*Future<void> requestPermission() async {
-    final status = await location.requestPermission();
-    if (status == PermissionStatus.granted) {
-      checkPermissions();
-    } else {
-      showInfoPermissionDialog();
-    }
-  }*/
 }

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:citylights/di/app_modules.dart';
 import 'package:citylights/model/monument.dart';
 import 'package:citylights/presentation/model/resource_state.dart';
+import 'package:citylights/presentation/view/favorite/favorites_provider.dart';
 import 'package:citylights/presentation/view/monument/viewmodel/monuments_view_model.dart';
 import 'package:citylights/presentation/widget/error/error_view.dart';
 import 'package:citylights/presentation/widget/loading/loading_view.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 
 class MonumentDetailPage extends StatefulWidget {
   const MonumentDetailPage({super.key, required this.monumentId});
@@ -17,19 +19,20 @@ class MonumentDetailPage extends StatefulWidget {
   final String monumentId;
 
   @override
-  State<MonumentDetailPage> createState() => _MyWidgetState();
+  State<MonumentDetailPage> createState() => _MonumentDetailPageState();
 }
 
-class _MyWidgetState extends State<MonumentDetailPage> {
-  final MonumentsViewModel _viewModel = inject<MonumentsViewModel>();
+class _MonumentDetailPageState extends State<MonumentDetailPage> {
+  final MonumentsViewModel _monumentsViewModel = inject<MonumentsViewModel>();
   final MapController _mapController = MapController();
+
   Monument? _monument;
 
   @override
   void initState() {
     super.initState();
 
-    _viewModel.getMonumentDetailState.stream.listen((state) {
+    _monumentsViewModel.getMonumentDetailState.stream.listen((state) {
       switch (state.status) {
         case Status.LOADING:
           setState(() {
@@ -47,57 +50,91 @@ class _MyWidgetState extends State<MonumentDetailPage> {
           setState(() {
             LoadingView.hide();
             ErrorView.show(context, state.exception.toString(), () {
-              _viewModel.fetchMonumentDetail(widget.monumentId);
+              _monumentsViewModel.fetchMonumentDetail(widget.monumentId);
             });
           });
           break;
       }
     });
 
-    _viewModel.fetchMonumentDetail(widget.monumentId);
+    _monumentsViewModel.fetchMonumentDetail(widget.monumentId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(_monument?.title ?? '', maxLines: 2),
+          toolbarHeight: 100,
+          title: Text(
+            _monument?.title ?? '',
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
         ),
         body: _getContentView());
   }
 
   Widget _getContentView() {
+    final provider = Provider.of<FavoritesProvider>(context, listen: false);
+
     if (_monument == null) return Container();
 
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Column(
             children: [
               Card(
                 elevation: 5,
                 child: Column(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                        placeholder: (context, url) {
-                          //TODO: es url o string del asset?
-                          return const Image(
-                              image:
-                                  AssetImage("assets/images/church_icon.jpeg"));
-                        },
-                        errorWidget: (context, url, error) {
-                          return const Image(
-                              image:
-                                  AssetImage("assets/images/church_icon.jpeg"));
-                        },
-                        imageUrl: _monument!.image,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
+                    Stack(children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: CachedNetworkImage(
+                          placeholder: (context, url) {
+                            return const Image(
+                                image: AssetImage(
+                                    "assets/images/church_icon.jpeg"));
+                          },
+                          errorWidget: (context, url, error) {
+                            return const Image(
+                                image: AssetImage(
+                                    "assets/images/church_icon.jpeg"));
+                          },
+                          imageUrl: _monument!.image,
+                          width: double.infinity,
+                          fit: BoxFit.contain,
+                        ),
                       ),
-                    ),
+                      Positioned(
+                        top: 16.0,
+                        right: 16.0,
+                        child: FloatingActionButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              if (!_monument!.isFavorite) {
+                                _monument!.isFavorite = true;
+                                provider.addToFavorites(_monument!);
+                                provider.getFavorites();
+                              } else {
+                                _monument!.isFavorite = false;
+                                provider.deleteFromFavorites(_monument!);
+                                provider.getFavorites();
+                              }
+                            });
+                          },
+                          child: _monument!.isFavorite
+                              ? const Icon(Icons.favorite, color: Colors.red)
+                              : const Icon(Icons.favorite_border),
+                        ),
+                      ),
+                    ]),
                     Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Column(
@@ -174,7 +211,7 @@ class _MyWidgetState extends State<MonumentDetailPage> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                             content: Text(_monument?.title ??
-                                                "Monument")));
+                                                "Unknown Monument")));
                                   },
                                   child: const Icon(
                                     Icons.location_on,
@@ -204,7 +241,7 @@ class _MyWidgetState extends State<MonumentDetailPage> {
 
   @override
   void dispose() {
-    _viewModel.dispose();
+    _monumentsViewModel.dispose();
     super.dispose();
   }
 }

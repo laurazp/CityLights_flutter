@@ -1,4 +1,5 @@
 import 'package:citylights/data/monument/remote/mapper/monument_list_remote_mapper.dart';
+import 'package:citylights/data/monument/remote/mapper/monument_remote_mapper.dart';
 import 'package:citylights/data/monument/remote/mapper/paging_monument_list_remote_mapper.dart';
 import 'package:citylights/data/monument/remote/model/monument_list_remote_model.dart';
 import 'package:citylights/data/monument/remote/model/monument_remote_model.dart';
@@ -45,13 +46,13 @@ class MonumentsRemoteImpl {
     }
   }
 
-  Future<MonumentRemoteModel> getMonumentDetail(String monumentId) async {
+  Future<Monument> getMonumentDetail(String monumentId) async {
     try {
       final response = await _networkClient.dio.get(
         NetworkConstants.getMonumentDetailPath(monumentId),
         queryParameters: {"srsname": "wgs84"},
       );
-      return MonumentRemoteModel.fromMap(response.data);
+      return MonumentRemoteMapper.fromRemote(MonumentRemoteModel.fromMap(response.data));
     } catch (error) {
       throw RemoteErrorMapper.getException(error);
     }
