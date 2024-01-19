@@ -1,11 +1,13 @@
 import 'package:citylights/di/app_modules.dart';
 import 'package:citylights/model/favorite_item.dart';
 import 'package:citylights/presentation/model/resource_state.dart';
+import 'package:citylights/presentation/view/favorite/favorites_provider.dart';
 import 'package:citylights/presentation/view/favorite/viewmodel/favorites_view_model.dart';
 import 'package:citylights/presentation/widget/error/error_view.dart';
 import 'package:citylights/presentation/widget/favorite_list_row.dart';
 import 'package:citylights/presentation/widget/loading/loading_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
@@ -111,7 +113,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
   _addFavorites(List<FavoriteItem> response) async {
     _favorites.clear();
     _favorites.addAll(response);
-
+    Provider.of<FavoritesProvider>(context, listen: false).monuments =
+        _favorites;
     setState(() {});
   }
 }
