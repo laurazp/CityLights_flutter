@@ -24,17 +24,13 @@ class MonumentDetailPage extends StatefulWidget {
 
 class _MonumentDetailPageState extends State<MonumentDetailPage> {
   final MonumentsViewModel _monumentsViewModel = inject<MonumentsViewModel>();
-  //final FavoritesViewModel _favoritesViewModel = inject<FavoritesViewModel>();
   final MapController _mapController = MapController();
 
   Monument? _monument;
-  //late bool _isFavorite;
 
   @override
   void initState() {
     super.initState();
-
-    //_isFavorite = false;
 
     _monumentsViewModel.getMonumentDetailState.stream.listen((state) {
       switch (state.status) {
@@ -117,23 +113,19 @@ class _MonumentDetailPageState extends State<MonumentDetailPage> {
                         top: 16.0,
                         right: 16.0,
                         child: FloatingActionButton(
-                          //backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
                           onPressed: () {
-                            //_addToFavorites
                             setState(() {
                               if (!_monument!.isFavorite) {
                                 _monument!.isFavorite = true;
                                 provider.addToFavorites(_monument!);
                                 provider.getFavorites();
-                                //Provider.of<FavoritesProvider>(context, listen: false).addToFavorites(_monument!);
                               } else {
                                 _monument!.isFavorite = false;
                                 provider.deleteFromFavorites(_monument!);
                                 provider.getFavorites();
-                                //Provider.of<FavoritesProvider>(context, listen: false).deleteFromFavorites(_monument!);
                               }
                             });
                           },
@@ -246,24 +238,6 @@ class _MonumentDetailPageState extends State<MonumentDetailPage> {
       ),
     );
   }
-
-  /*_addToFavorites() async {
-    setState(() {
-      if (!_monument!.isFavorite) {
-        _monument!.isFavorite = true;
-        _favoritesViewModel.addMonumentToFavorites(_monument!);
-      } else {
-        _deleteFromFavorites();
-      }
-    });
-  }
-
-  _deleteFromFavorites() async {
-    setState(() {
-      _monument!.isFavorite = false;
-      _favoritesViewModel.deleteMonumentFromFavorites(_monument!);
-    });
-  }*/
 
   @override
   void dispose() {
