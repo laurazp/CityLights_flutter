@@ -23,7 +23,7 @@ class _MarkerInfoCardState extends State<MarkerInfoCard> {
         onTap: () {
           /*
           En este caso utilizo Navigator.push porque si no la vista del detalle no
-          se refrescaba bien al intentar ir al detalle de otro monumento, si no que 
+          se refrescaba bien al intentar ir al detalle de otro marker, si no que 
           seguía mostrando el detalle del monumento anterior.
           */
           Navigator.push(

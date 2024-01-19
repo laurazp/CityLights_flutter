@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:citylights/di/app_modules.dart';
 import 'package:citylights/model/monument.dart';
 import 'package:citylights/presentation/model/resource_state.dart';
-import 'package:citylights/presentation/view/favorite/viewmodel/favorites_view_model.dart';
+import 'package:citylights/presentation/view/favorite/favorites_provider.dart';
 import 'package:citylights/presentation/view/monument/viewmodel/monuments_view_model.dart';
 import 'package:citylights/presentation/widget/error/error_view.dart';
 import 'package:citylights/presentation/widget/loading/loading_view.dart';
@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 
 class MonumentDetailPage extends StatefulWidget {
   const MonumentDetailPage({super.key, required this.monumentId});
@@ -23,17 +24,13 @@ class MonumentDetailPage extends StatefulWidget {
 
 class _MonumentDetailPageState extends State<MonumentDetailPage> {
   final MonumentsViewModel _monumentsViewModel = inject<MonumentsViewModel>();
-  final FavoritesViewModel _favoritesViewModel = inject<FavoritesViewModel>();
   final MapController _mapController = MapController();
 
   Monument? _monument;
-  //late bool _isFavorite;
 
   @override
   void initState() {
     super.initState();
-
-    //_isFavorite = false;
 
     _monumentsViewModel.getMonumentDetailState.stream.listen((state) {
       switch (state.status) {
@@ -79,6 +76,8 @@ class _MonumentDetailPageState extends State<MonumentDetailPage> {
   }
 
   Widget _getContentView() {
+    final provider = Provider.of<FavoritesProvider>(context, listen: false);
+
     if (_monument == null) return Container();
 
     return SafeArea(
@@ -114,11 +113,22 @@ class _MonumentDetailPageState extends State<MonumentDetailPage> {
                         top: 16.0,
                         right: 16.0,
                         child: FloatingActionButton(
-                          //backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30.0),
                           ),
-                          onPressed: _addToFavorites,
+                          onPressed: () {
+                            setState(() {
+                              if (!_monument!.isFavorite) {
+                                _monument!.isFavorite = true;
+                                provider.addToFavorites(_monument!);
+                                provider.getFavorites();
+                              } else {
+                                _monument!.isFavorite = false;
+                                provider.deleteFromFavorites(_monument!);
+                                provider.getFavorites();
+                              }
+                            });
+                          },
                           child: _monument!.isFavorite
                               ? const Icon(Icons.favorite, color: Colors.red)
                               : const Icon(Icons.favorite_border),
@@ -227,24 +237,6 @@ class _MonumentDetailPageState extends State<MonumentDetailPage> {
         ),
       ),
     );
-  }
-
-  _addToFavorites() async {
-    setState(() {
-      if (!_monument!.isFavorite) {
-        _monument!.isFavorite = true;
-        _favoritesViewModel.addMonumentToFavorites(_monument!);
-      } else {
-        _deleteFromFavorites();
-      }
-    });
-  }
-
-  _deleteFromFavorites() async {
-    setState(() {
-      _monument!.isFavorite = false;
-      _favoritesViewModel.deleteMonumentFromFavorites(_monument!);
-    });
   }
 
   @override

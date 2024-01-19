@@ -21,7 +21,6 @@ class MonumentRemoteMapper {
     );
   }
 
-  // TODO: borrar si no se usa
   static MonumentRemoteModel toRemote(Monument model) {
     return MonumentRemoteModel(
       id: int.parse(model.monumentId),

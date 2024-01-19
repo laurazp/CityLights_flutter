@@ -37,14 +37,6 @@ class FavoritesViewModel extends BaseViewModel {
   }
 
   deleteMonumentFromFavorites(Monument monument) async {
-    /*if (isFavoriteInDatabase(monument)) {
-      await _favoritesRepository.removeItem(monument);
-    }*/
-
     await _favoritesRepository.removeItem(monument);
   }
-
-  /*bool isFavoriteInDatabase(Monument monument) {
-    return _favoritesRepository.isFavoriteInDatabase(monument);
-  }*/
 }

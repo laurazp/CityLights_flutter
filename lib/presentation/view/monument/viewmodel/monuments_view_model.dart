@@ -30,7 +30,6 @@ class MonumentsViewModel extends BaseViewModel {
             (error) => getMapMonumentListState.add(ResourceState.error(error)));
   }
 
-  //TODO: Modificar para que acepte paginado
   fetchPagingMonumentList(int page) {
     getMonumentListState.add(ResourceState.loading());
 
