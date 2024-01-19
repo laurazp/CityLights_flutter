@@ -3,7 +3,6 @@ import 'package:citylights/di/app_modules.dart';
 import 'package:citylights/model/monument.dart';
 import 'package:citylights/presentation/model/resource_state.dart';
 import 'package:citylights/presentation/view/favorite/favorites_provider.dart';
-import 'package:citylights/presentation/view/favorite/viewmodel/favorites_view_model.dart';
 import 'package:citylights/presentation/view/monument/viewmodel/monuments_view_model.dart';
 import 'package:citylights/presentation/widget/error/error_view.dart';
 import 'package:citylights/presentation/widget/loading/loading_view.dart';
@@ -25,7 +24,7 @@ class MonumentDetailPage extends StatefulWidget {
 
 class _MonumentDetailPageState extends State<MonumentDetailPage> {
   final MonumentsViewModel _monumentsViewModel = inject<MonumentsViewModel>();
-  final FavoritesViewModel _favoritesViewModel = inject<FavoritesViewModel>();
+  //final FavoritesViewModel _favoritesViewModel = inject<FavoritesViewModel>();
   final MapController _mapController = MapController();
 
   Monument? _monument;
@@ -124,15 +123,16 @@ class _MonumentDetailPageState extends State<MonumentDetailPage> {
                           ),
                           onPressed: () {
                             //_addToFavorites
-
                             setState(() {
                               if (!_monument!.isFavorite) {
                                 _monument!.isFavorite = true;
                                 provider.addToFavorites(_monument!);
+                                provider.getFavorites();
                                 //Provider.of<FavoritesProvider>(context, listen: false).addToFavorites(_monument!);
                               } else {
                                 _monument!.isFavorite = false;
                                 provider.deleteFromFavorites(_monument!);
+                                provider.getFavorites();
                                 //Provider.of<FavoritesProvider>(context, listen: false).deleteFromFavorites(_monument!);
                               }
                             });
