@@ -35,10 +35,12 @@ class _FavoritesPageState extends State<FavoritesPage> {
           });
           break;
         case Status.SUCCESS:
-          LoadingView.hide();
-          _addFavorites(state.data!);
-          Provider.of<FavoritesProvider>(context, listen: false)
-              .addFavorites(state.data!);
+          setState(() {
+            LoadingView.hide();
+            _addFavorites(state.data!);
+            Provider.of<FavoritesProvider>(context, listen: false)
+                .addFavorites(state.data!);
+          });
           break;
         case Status.ERROR:
           setState(() {

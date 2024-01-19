@@ -5,5 +5,4 @@ abstract class FavoritesRepository {
   Future<List<FavoriteItem>> getFavoriteList();
   addItem(Monument item);
   removeItem(Monument item);
-  //isFavoriteInDatabase(Monument monument);
 }
